@@ -1,17 +1,24 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+	"session-root/routes"
+	"session-root/utils"
 )
 
 func main() {
+	utils.InitConfig()
+
+	serverPort := viper.GetInt("server.port")
+
 	r := gin.Default()
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	routes.RootRoutes(r)
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	e := r.Run(fmt.Sprintf(":%d", serverPort))
+	if e != nil {
+		return
+	}
 }
